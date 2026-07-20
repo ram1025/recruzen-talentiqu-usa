@@ -10,14 +10,17 @@ body {font-family: 'Inter', Arial; background: #f8fafc; margin:0;}
 .login-box h2 {color:#0f172a;}
 .login-box input {width:100%; padding:12px; margin:10px 0; border:1px solid #cbd5e1; border-radius:6px;}
 .btn {background:#2563eb; color:white; padding:12px; width:100%; border:none; border-radius:6px; font-weight:600; cursor:pointer;}
+.btn:hover {background:#1d4ed8;}
 .header {display:flex; justify-content:space-between; align-items:center; background:white; padding:15px 30px; border-bottom:1px solid #e2e8f0;}
 .search-bar {background:white; padding:20px; margin:20px; border-radius:8px; border:1px solid #e2e8f0; display:flex; gap:10px; flex-wrap:wrap;}
 .search-bar input,.search-bar select {padding:10px; border:1px solid #cbd5e1; border-radius:6px; flex:1; min-width:160px;}
-.candidate-card {background:white; margin:20px; padding:20px; border-radius:8px; border:1px solid #e2e8f0;}
+.candidate-card {background:white; margin:20px; padding:20px; border-radius:8px; border:1px solid #e2e8f0; position:relative;}
 .match-score {background:#dcfce7; color:#166534; padding:4px 8px; border-radius:20px; font-size:12px; font-weight:700;}
-.tag {background:#eff6ff; color:#1e40af; padding:4px 8px; border-radius:4px; font-size:12px; margin-right:5px; border:1px solid #bfdbfe;}
+.tag {background:#eff6ff; color:#1e40af; padding:4px 8px; border-radius:4px; font-size:12px; margin-right:5px; border:1px solid #bfdbfe; display:inline-block; margin-top:5px;}
 .new {border-left:4px solid #16a34a;}
+.new-badge {position: absolute; top: 15px; right: 15px; background: #16a34a; color: white; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight:700;}
 #dashboard {display:none;}
+.demo-note {font-size:12px; color:#64748b; text-align:center; margin-top:10px;}
 </style>
 </head>
 <body>
@@ -27,9 +30,10 @@ body {font-family: 'Inter', Arial; background: #f8fafc; margin:0;}
   <div class="login-box">
     <h2>RECRUZEN-USA</h2>
     <p style="color:#64748b;">AI Sourcing for US IT Recruiters</p>
-    <input type="email" id="email" placeholder="Work Email">
-    <input type="password" id="pass" placeholder="Password">
+    <input type="email" id="email" placeholder="Work Email" value="makinaramganesh@gmail.com">
+    <input type="password" id="pass" placeholder="Password" value="abcd123">
     <button class="btn" onclick="login()">Login</button>
+    <p class="demo-note">Demo: makinaramganesh@gmail.com / abcd123</p>
   </div>
 </div>
 
@@ -43,12 +47,20 @@ body {font-family: 'Inter', Arial; background: #f8fafc; margin:0;}
   <div class="search-bar">
     <input type="text" id="jobTitle" placeholder="Job Title: Java Developer">
     <input type="text" id="skills" placeholder="Skills: Spring, AWS">
+    <select id="notice">
+      <option value="">Any Notice Period</option>
+      <option value="Immediate">Immediate</option>
+      <option value="2 Weeks">2 Weeks</option>
+      <option value="30 Days">30 Days</option>
+      <option value="60 Days">60 Days</option>
+    </select>
     <select id="location">
       <option value="">Any Location</option>
       <option value="Remote">Remote</option>
-      <option value="New York, NY">New York, NY</option>
       <option value="Austin, TX">Austin, TX</option>
+      <option value="New York, NY">New York, NY</option>
       <option value="San Francisco, CA">San Francisco, CA</option>
+      <option value="Dallas, TX">Dallas, TX</option>
     </select>
     <select id="visa">
       <option value="">Any Visa</option>
@@ -67,26 +79,46 @@ body {font-family: 'Inter', Arial; background: #f8fafc; margin:0;}
 let credits = 50;
 let candidates = [];
 
-// DEMO LOGIN
+// DEMO LOGIN WITH CHECK
 function login(){
-  if(document.getElementById('email').value && document.getElementById('pass').value){
+  let email = document.getElementById('email').value;
+  let pass = document.getElementById('pass').value;
+  if(email === "makinaramganesh@gmail.com" && pass === "abcd123"){
     document.getElementById('loginPage').style.display='none';
     document.getElementById('dashboard').style.display='block';
     loadCandidates();
-  } else alert("Enter email and password");
+  } else {
+    alert("Invalid credentials. Use: makinaramganesh@gmail.com / abcd123");
+  }
 }
 
+// YOUR DEFAULT PROFILE + DUMMY DATA
 const dummyData = [
-  {name:"Priya Sharma", designation:"Senior Java Developer", match:"96%", visa:"H1B", location:"Remote", skills:"Java, Spring Boot, AWS", exp:5, isNew:false},
-  {name:"Rahul Verma", designation:"Full Stack Engineer", match:"92%", visa:"Green Card", location:"Austin, TX", skills:"React, Node, AWS", exp:4, isNew:false},
+  {name:"Priya Sharma", designation:"Senior Java Developer", match:"96%", visa:"H1B", location:"Remote", notice:"30 Days", skills:"Java, Spring Boot, AWS", exp:5, isNew:false},
+  {name:"Rahul Verma", designation:"Full Stack Engineer", match:"92%", visa:"Green Card", location:"Austin, TX", notice:"Immediate", skills:"React, Node, AWS", exp:4, isNew:false},
 ];
+
+// YOUR PROFILE - DEFAULT
+const myProfile = {
+  name:"GANESH RAM MAKINA", 
+  designation:"IT Support Specialist & Senior Talent Acquisition", 
+  match:"99%", 
+  visa:"H1B", 
+  location:"Austin, TX", 
+  notice:"30 Days", 
+  skills:"Java, J2EE, Spring Boot, WebSphere, Kibana, Grafana, ATS, Recruitment", 
+  exp:9, 
+  isNew:true
+};
 
 function loadCandidates(){
   let saved = localStorage.getItem("talentiqProfile");
   if(saved){
     let p = JSON.parse(saved);
     candidates = [{...p, match:"99%", isNew:true},...dummyData];
-  } else candidates = [...dummyData];
+  } else {
+    candidates = [myProfile, ...dummyData]; // NUV DEFAULT GA TOP LO UNTAV
+  }
 }
 
 function displayCandidates(list){
@@ -94,8 +126,9 @@ function displayCandidates(list){
   if(list.length==0) html="<p style='text-align:center; padding:40px;'>No candidates found</p>";
   list.forEach(c=>{
     html+=`<div class="candidate-card ${c.isNew?'new':''}">
+      ${c.isNew ? '<span class="new-badge">NEW</span>' : ''}
       <h3>${c.name} <span class="match-score">Match: ${c.match}</span></h3>
-      <p><b>${c.designation}</b> | ${c.exp} Years | ${c.location} | Visa: ${c.visa}</p>
+      <p><b>${c.designation}</b> | ${c.exp} Years | ${c.location} | Visa: ${c.visa} | Notice: ${c.notice}</p>
       <p>${c.skills.split(',').map(s=>`<span class="tag">${s.trim()}</span>`).join('')}</p>
       <button class="btn" style="width:150px;" onclick="contact('${c.name}')">View & Contact</button>
     </div>`;
@@ -106,11 +139,13 @@ function displayCandidates(list){
 function searchCandidates(){
   let j=document.getElementById('jobTitle').value.toLowerCase();
   let s=document.getElementById('skills').value.toLowerCase();
+  let n=document.getElementById('notice').value;
   let l=document.getElementById('location').value;
   let v=document.getElementById('visa').value;
   let filtered=candidates.filter(c=>
     (j===""||c.designation.toLowerCase().includes(j)) &&
     (s===""||c.skills.toLowerCase().includes(s)) &&
+    (n===""||c.notice===n) &&
     (l===""||c.location===l) &&
     (v===""||c.visa===v)
   );
