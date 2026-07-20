@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALENTIQ-USA - AI Resume Builder</title>
+<style>
+body {font-family:'Inter', Arial; background:#f8fafc; padding:20px;}
+.container {max-width:800px; margin:0 auto; background:white; padding:30px; border-radius:12px; border:1px solid #e2e8f0;}
+h2 {color:#0f172a;}
+.upload {border:2px dashed #2563eb; padding:40px; text-align:center; border-radius:8px; margin:20px 0;}
+input, select {width:100%; padding:12px; margin:8px 0; border:1px solid #cbd5e1; border-radius:6px;}
+.row {display:flex; gap:10px;}
+.btn {background:#16a34a; color:white; padding:12px 24px; border:none; border-radius:6px; font-weight:600; cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>TALENTIQ-USA</h2>
+  <p style="color:#64748b;">Upload Resume → Auto Fill Profile → Get Hired by US Companies</p>
+
+  <div class="upload">
+    <input type="file" id="resume" accept=".pdf,.docx" onchange="parseResume(event)">
+    <p>📄 Drop Resume PDF/DOCX Here</p>
+  </div>
+
+  <h3>Verify Your Profile</h3>
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="text" id="designation" placeholder="Job Title: e.g. Java Developer">
+  <div class="row">
+    <input type="number" id="exp" placeholder="Years of Experience">
+    <input type="text" id="location" placeholder="Location: e.g. Remote / Austin, TX">
+  </div>
+  <input type="text" id="skills" placeholder="Skills: Java, Spring, AWS">
+
+  <h4>Links - Auto Detected</h4>
+  <input type="url" id="linkedin" placeholder="LinkedIn URL">
+  <input type="url" id="github" placeholder="GitHub URL">
+  <input type="url" id="portfolio" placeholder="Portfolio URL">
+
+  <h4>Visa Status</h4>
+  <select id="visa">
+    <option value="">Select Visa Status</option>
+    <option value="US Citizen">US Citizen</option>
+    <option value="Green Card">Green Card</option>
+    <option value="H1B">H1B</option>
+    <option value="OPT">OPT/CPT</option>
+    <option value="Need Sponsorship">Need Sponsorship</option>
+  </select>
+
+  <button class="btn" onclick="saveProfile()">Save & Make Profile Live</button>
+</div>
+
+<script>
+// FAKE RESUME PARSER - Real lo pdf.js use chestham
+function parseResume(e){
+  let file = e.target.files[0];
+  if(!file) return;
+  alert("Parsing resume... Demo mode");
+
+  // DEMO AUTOFILL DATA
+  document.getElementById('name').value = "GANESH RAM MAKINA";
+  document.getElementById('designation').value = "IT Support Specialist & Senior Talent Acquisition";
+  document.getElementById('exp').value = "9";
+  document.getElementById('location').value = "Remote";
+  document.getElementById('skills').value = "Java, J2EE, Spring Boot, WebSphere, Kibana, Grafana, ATS, Recruitment";
+  document.getElementById('linkedin').value = "https://linkedin.com/in/ganeshmakina";
+  document.getElementById('github').value = "https://github.com/ganeshmakina";
+  document.getElementById('portfolio').value = "https://ganeshmakina.dev";
+}
+
+function saveProfile(){
+  let profile = {
+    name: document.getElementById('name').value,
+    designation: document.getElementById('designation').value,
+    exp: document.getElementById('exp').value,
+    location: document.getElementById('location').value,
+    skills: document.getElementById('skills').value,
+    linkedin: document.getElementById('linkedin').value,
+    github: document.getElementById('github').value,
+    portfolio: document.getElementById('portfolio').value,
+    visa: document.getElementById('visa').value
+  };
+  localStorage.setItem("talentiqProfile", JSON.stringify(profile));
+  alert("✅ Profile Live! US Recruiters can now find you on RECRUZEN-USA");
+}
+</script>
+</body>
+</html>
