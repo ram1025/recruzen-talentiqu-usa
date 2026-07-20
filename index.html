@@ -4,26 +4,53 @@
 <meta charset="UTF-8">
 <title>RECRUZEN-USA + TALENTIQ-USA</title>
 <style>
-body {font-family:Inter, Arial; background:#f8fafc; text-align:center; padding:80px 20px;}
-.card {max-width:600px; margin:0 auto; background:white; padding:40px; border-radius:12px; border:1px solid #e2e8f0; box-shadow:0 4px 10px rgba(0,0,0,0.05);}
-h1 {color:#0f172a; margin-bottom:10px;}
-p {color:#64748b; margin-bottom:30px;}
-.btn {display:inline-block; background:#2563eb; color:white; padding:14px 24px; border-radius:8px; text-decoration:none; margin:10px; font-weight:600; transition:0.3s;}
-.btn:hover {background:#1d4ed8;}
-.btn.green {background:#16a34a;}
-.btn.green:hover {background:#15803d;}
+body {font-family:Inter, Arial; background:#f1f5f9; padding:40px 20px; margin:0;}
+.container {max-width:1000px; margin:0 auto;}
+.header {text-align:center; margin-bottom:50px;}
+.header h1 {color:#0f172a; font-size:32px; margin-bottom:10px;}
+.header p {color:#64748b; font-size:16px;}
+.cards {display:flex; gap:30px; justify-content:center; flex-wrap:wrap;}
+.card {background:white; padding:40px 30px; border-radius:12px; border:1px solid #e2e8f0; width:350px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.05); transition:0.3s;}
+.card:hover {transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.1);}
+.card h2 {color:#0f172a; margin-bottom:10px;}
+.card p {color:#64748b; margin-bottom:25px; min-height:60px;}
+.btn {display:inline-block; padding:14px 28px; border-radius:8px; text-decoration:none; font-weight:600; font-size:15px; transition:0.3s;}
+.btn.recruiter {background:#2563eb; color:white;}
+.btn.recruiter:hover {background:#1d4ed8;}
+.btn.candidate {background:#16a34a; color:white;}
+.btn.candidate:hover {background:#15803d;}
+.icon {font-size:50px; margin-bottom:15px;}
+.footer {text-align:center; margin-top:50px; color:#94a3b8; font-size:12px;}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>RECRUZEN-USA + TALENTIQ-USA</h1>
-  <p>AI-Powered Hiring Platform for US IT Recruiters & Candidates</p>
-  
-  <h3>Choose Your Portal:</h3>
-  <a href="recruzen-usa.html" class="btn">👔 Recruiter Login - RECRUZEN-USA</a>
-  <a href="talentiqu-usa.html" class="btn green">📄 Candidate - TALENTIQ-USA</a>
-  
-  <p style="font-size:12px; margin-top:30px;">Open Source | MIT License</p>
+<div class="container">
+  <div class="header">
+    <h1>RECRUZEN-USA + TALENTIQ-USA</h1>
+    <p>AI-Powered Hiring Platform for US IT</p>
+  </div>
+
+  <div class="cards">
+    <!-- RECRUITER CARD -->
+    <div class="card">
+      <div class="icon">👔</div>
+      <h2>For Recruiters</h2>
+      <p>Find top US IT talent with Visa, Location & Skills filters. AI Match Score included.</p>
+      <a href="recruzen-usa.html" class="btn recruiter">Login to RECRUZEN-USA</a>
+    </div>
+
+    <!-- CANDIDATE CARD -->
+    <div class="card">
+      <div class="icon">📄</div>
+      <h2>For Candidates</h2>
+      <p>Upload Resume. Auto-fill profile. Get hired by US Companies. 100% Free.</p>
+      <a href="talentiqu-usa.html" class="btn candidate">Join TALENTIQ-USA</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    Open Source | MIT License | Made for US IT Hiring
+  </div>
 </div>
 </body>
 </html>
