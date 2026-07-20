@@ -11,9 +11,11 @@ body {font-family: 'Inter', Arial; background: #f8fafc; margin:0;}
 .login-box input {width:100%; padding:12px; margin:10px 0; border:1px solid #cbd5e1; border-radius:6px;}
 .btn {background:#2563eb; color:white; padding:12px; width:100%; border:none; border-radius:6px; font-weight:600; cursor:pointer;}
 .btn:hover {background:#1d4ed8;}
+.btn.download {background:#16a34a; width:120px; margin-left:10px;}
+.btn.download:disabled {background:#94a3b8; cursor:not-allowed;}
 .header {display:flex; justify-content:space-between; align-items:center; background:white; padding:15px 30px; border-bottom:1px solid #e2e8f0;}
 .search-bar {background:white; padding:20px; margin:20px; border-radius:8px; border:1px solid #e2e8f0; display:flex; gap:10px; flex-wrap:wrap;}
-.search-bar input,.search-bar select {padding:10px; border:1px solid #cbd5e1; border-radius:6px; flex:1; min-width:160px;}
+.search-bar input,.search-bar select {padding:10px; border:1px solid #cbd5e1; border-radius:6px; flex:1; min-width:150px;}
 .candidate-card {background:white; margin:20px; padding:20px; border-radius:8px; border:1px solid #e2e8f0; position:relative;}
 .match-score {background:#dcfce7; color:#166534; padding:4px 8px; border-radius:20px; font-size:12px; font-weight:700;}
 .tag {background:#eff6ff; color:#1e40af; padding:4px 8px; border-radius:4px; font-size:12px; margin-right:5px; border:1px solid #bfdbfe; display:inline-block; margin-top:5px;}
@@ -21,6 +23,7 @@ body {font-family: 'Inter', Arial; background: #f8fafc; margin:0;}
 .new-badge {position: absolute; top: 15px; right: 15px; background: #16a34a; color: white; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight:700;}
 #dashboard {display:none;}
 .demo-note {font-size:12px; color:#64748b; text-align:center; margin-top:10px;}
+.card-actions {display:flex; align-items:center; margin-top:15px;}
 </style>
 </head>
 <body>
@@ -60,7 +63,6 @@ body {font-family: 'Inter', Arial; background: #f8fafc; margin:0;}
       <option value="Austin, TX">Austin, TX</option>
       <option value="New York, NY">New York, NY</option>
       <option value="San Francisco, CA">San Francisco, CA</option>
-      <option value="Dallas, TX">Dallas, TX</option>
     </select>
     <select id="visa">
       <option value="">Any Visa</option>
@@ -72,14 +74,15 @@ body {font-family: 'Inter', Arial; background: #f8fafc; margin:0;}
     </select>
     <button class="btn" style="width:auto;" onclick="searchCandidates()">Search Talent</button>
   </div>
-  <div id="candidateList"><p style="text-align:center; color:#64748b; padding:60px;">Search to find US IT candidates</p></div>
+  <div id="candidateList"><p style="text-align:center; color:#64748b; padding:60px;">Enter filters and click Search to find candidates</p></div>
 </div>
 
 <script>
 let credits = 50;
 let candidates = [];
+let downloadedProfiles = [];
 
-// DEMO LOGIN WITH CHECK
+// DEMO LOGIN
 function login(){
   let email = document.getElementById('email').value;
   let pass = document.getElementById('pass').value;
@@ -92,14 +95,9 @@ function login(){
   }
 }
 
-// YOUR DEFAULT PROFILE + DUMMY DATA
-const dummyData = [
-  {name:"Priya Sharma", designation:"Senior Java Developer", match:"96%", visa:"H1B", location:"Remote", notice:"30 Days", skills:"Java, Spring Boot, AWS", exp:5, isNew:false},
-  {name:"Rahul Verma", designation:"Full Stack Engineer", match:"92%", visa:"Green Card", location:"Austin, TX", notice:"Immediate", skills:"React, Node, AWS", exp:4, isNew:false},
-];
-
-// YOUR PROFILE - DEFAULT
+// YOUR PROFILE + DUMMY DATA
 const myProfile = {
+  id: "ganesh001",
   name:"GANESH RAM MAKINA", 
   designation:"IT Support Specialist & Senior Talent Acquisition", 
   match:"99%", 
@@ -108,29 +106,41 @@ const myProfile = {
   notice:"30 Days", 
   skills:"Java, J2EE, Spring Boot, WebSphere, Kibana, Grafana, ATS, Recruitment", 
   exp:9, 
-  isNew:true
+  isNew:true,
+  resume:"ganesh_ram_makina_resume.pdf"
 };
+
+const dummyData = [
+  {id:"p1", name:"Priya Sharma", designation:"Senior Java Developer", match:"96%", visa:"H1B", location:"Remote", notice:"30 Days", skills:"Java, Spring Boot, AWS", exp:5, isNew:false, resume:"priya_resume.pdf"},
+  {id:"p2", name:"Rahul Verma", designation:"Full Stack Engineer", match:"92%", visa:"Green Card", location:"Austin, TX", notice:"Immediate", skills:"React, Node, AWS", exp:4, isNew:false, resume:"rahul_resume.pdf"},
+];
 
 function loadCandidates(){
   let saved = localStorage.getItem("talentiqProfile");
   if(saved){
     let p = JSON.parse(saved);
-    candidates = [{...p, match:"99%", isNew:true},...dummyData];
+    candidates = [{...p, id:"saved001", match:"99%", isNew:true, resume:"candidate_resume.pdf"},...dummyData];
   } else {
-    candidates = [myProfile, ...dummyData]; // NUV DEFAULT GA TOP LO UNTAV
+    candidates = [myProfile, ...dummyData]; // NUV DEFAULT GA UNTAV
   }
+  downloadedProfiles = JSON.parse(localStorage.getItem("downloaded")) || [];
 }
 
 function displayCandidates(list){
   let html = "";
-  if(list.length==0) html="<p style='text-align:center; padding:40px;'>No candidates found</p>";
+  if(list.length==0) html="<p style='text-align:center; padding:40px; color:#64748b;'>No candidates found. Try clearing filters.</p>";
   list.forEach(c=>{
+    let alreadyDownloaded = downloadedProfiles.includes(c.id);
     html+=`<div class="candidate-card ${c.isNew?'new':''}">
       ${c.isNew ? '<span class="new-badge">NEW</span>' : ''}
       <h3>${c.name} <span class="match-score">Match: ${c.match}</span></h3>
       <p><b>${c.designation}</b> | ${c.exp} Years | ${c.location} | Visa: ${c.visa} | Notice: ${c.notice}</p>
       <p>${c.skills.split(',').map(s=>`<span class="tag">${s.trim()}</span>`).join('')}</p>
-      <button class="btn" style="width:150px;" onclick="contact('${c.name}')">View & Contact</button>
+      <div class="card-actions">
+        <button class="btn download" ${alreadyDownloaded ? 'disabled' : ''} onclick="downloadResume('${c.id}', '${c.name}', '${c.resume}')">
+          ${alreadyDownloaded ? '✓ Downloaded' : '⬇ Download CV'}
+        </button>
+      </div>
     </div>`;
   });
   document.getElementById('candidateList').innerHTML=html;
@@ -152,9 +162,28 @@ function searchCandidates(){
   displayCandidates(filtered);
 }
 
-function contact(name){
-  if(credits>0){credits--; document.getElementById('credits').innerText=credits; alert(`Contact request sent to ${name}`);}
-  else alert("Buy credits");
+// CREDIT DEDUCT + DOWNLOAD LOGIC
+function downloadResume(id, name, filename){
+  if(credits <= 0){
+    alert("❌ No credits left. Please buy credits.");
+    return;
+  }
+  if(downloadedProfiles.includes(id)){
+    alert("Already downloaded");
+    return;
+  }
+  
+  credits = credits - 1;
+  document.getElementById('credits').innerText = credits;
+  downloadedProfiles.push(id);
+  localStorage.setItem("downloaded", JSON.stringify(downloadedProfiles));
+  
+  alert(`✅ 1 Credit Deducted! \nDownloading ${name}'s Resume: ${filename}`);
+  
+  // DEMO: Real lo file download link istham
+  // window.open('resumes/'+filename, '_blank');
+  
+  searchCandidates(); // Button ni "Downloaded" ga update cheyyadaniki
 }
 </script>
 </body>
